@@ -1,7 +1,6 @@
 # 第一阶段
 
 1. [React.js简介](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#react.js-简介)
-<a href="#1">React.js简介</a>
 2. [前端组件化（一）：从一个简单的例子讲起](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#前端组件化（一）：从一个简单的例子讲起)
 3. [前端组件化（二）：优化DOM操作](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#前端组件化（二）：优化DOM操作)
 4. [前端组件化（三）：抽象出公共组件类](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#前端组件化（三）：抽象出公共组件类)
@@ -15,7 +14,6 @@
 12. [stateVSprops](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#state-vs-props)
 13. [渲染列表数据](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#渲染列表数据)
 
-<a name = "1">
 ## React.js 简介
 
 React.js 是一个帮助你构建页面 UI 的库。如果你熟悉 MVC 概念的话，那么 React 的组件就相当于 MVC 里面的 View。如果你不熟悉也没关系，你可以简单地理解为，React.js 将帮助我们将界面分成了各个独立的小块，每一个块就是组件，这些组件之间可以组合、嵌套，就成了我们的页面。
