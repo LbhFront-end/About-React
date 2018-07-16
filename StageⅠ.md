@@ -1,17 +1,17 @@
 # 第一阶段
 
-1. [React.js简介](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#React.js 简介)
+1. [React.js简介](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#react.js-简介)
 2. [前端组件化（一）：从一个简单的例子讲起](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#前端组件化（一）：从一个简单的例子讲起)
 3. [前端组件化（二）：优化DOM操作](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#前端组件化（二）：优化DOM操作)
 4. [前端组件化（三）：抽象出公共组件类](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#前端组件化（三）：抽象出公共组件类)
-5. [React.js基本环境安装](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#React.js基本环境安装)
-6. [使用JSX描述UI信息](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#使用JSX描述UI信息)
+5. [React.js基本环境安装](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#react.js基本环境安装)
+6. [使用JSX描述UI信息](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#使用jsx描述UI信息)
 7. [组件的render方法](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#组件的render方法)
 8. [组件的组合、嵌套和组件树](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#组件的组合、嵌套和组件树)
 9. [事件监听](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#事件监听)
-10. [组件的state和setState](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#组件的state和setState)
+10. [组件的state和setState](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#组件的state和setstate)
 11. [配置组件的props](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#配置组件的props)
-12. [stateVSprops](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#stateVSprops)
+12. [stateVSprops](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#state-vs-props)
 13. [渲染列表数据](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#渲染列表数据)
 
 ## React.js 简介
@@ -1394,7 +1394,7 @@ class Index extends Component {
 
 
 
-## stateVSprops
+## state vs props
 
 我们来一个关于 `state` 和 `props` 的总结。
 
