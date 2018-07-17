@@ -2,13 +2,13 @@
 
 
 1. [前端应用状态管理-状态提升](https://github.com/LbhFront-end/About-React/blob/master/stageⅡ.md#前端应用状态管理-状态提升)
-2. [挂载阶段的组件生命周期（一）](https://github.com/LbhFront-end/About-React/blob/master/stageⅡ.md#挂载阶段的组件生命周期（一）)
-3. [挂载阶段的组件生命周期（二）](https://github.com/LbhFront-end/About-React/blob/master/stageⅡ.md#挂载阶段的组件生命周期（二）)
+2. [挂载阶段的组件生命周期（一）](https://github.com/LbhFront-end/About-React/blob/master/stageⅡ.md#挂载阶段的组件生命周期一)
+3. [挂载阶段的组件生命周期（二）](https://github.com/LbhFront-end/About-React/blob/master/stageⅡ.md#挂载阶段的组件生命周期二)
 4. [更新阶段的组件生命周期](https://github.com/LbhFront-end/About-React/blob/master/stageⅡ.md#更新阶段的组件生命周期)
-5. [ref 和 React.js 中的 DOM 操作](https://github.com/LbhFront-end/About-React/blob/master/stageⅡ.md#ref-和-react.js-中的-dom-操作)
-6. [props.children 和容器类组件](https://github.com/LbhFront-end/About-React/blob/master/stageⅡ.md#props.children-和容器类组件)
+5. [ref 和 React.js 中的 DOM 操作](https://github.com/LbhFront-end/About-React/blob/master/stageⅡ.md#ref-和-reactjs-中的-dom-操作)
+6. [props.children 和容器类组件](https://github.com/LbhFront-end/About-React/blob/master/stageⅡ.md#propschildren-和容器类组件)
 7. [dangerouslySetHTML 和 style 属性](https://github.com/LbhFront-end/About-React/blob/master/stageⅡ.md#dangerouslysethtml-和-style-属性)
-8. [PropTypes 和组件参数验证](https://github.com/LbhFront-end/About-React/blob/master/stageⅡ.md#propTypes-和组件参数验证)
+8. [PropTypes 和组件参数验证](https://github.com/LbhFront-end/About-React/blob/master/stageⅡ.md#proptypes-和组件参数验证)
 
 
 
