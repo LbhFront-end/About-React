@@ -1,6 +1,6 @@
 # 第一阶段
 
-1. [React.js简介](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#react.js-简介)
+1. [React.js简介](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#reactjs-简介)
 2. [前端组件化（一）：从一个简单的例子讲起](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#前端组件化（一）：从一个简单的例子讲起)
 3. [前端组件化（二）：优化DOM操作](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#前端组件化（二）：优化DOM操作)
 4. [前端组件化（三）：抽象出公共组件类](https://github.com/LbhFront-end/About-React/blob/master/StageⅠ.md#前端组件化（三）：抽象出公共组件类)
