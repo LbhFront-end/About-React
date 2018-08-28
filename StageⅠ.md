@@ -32,7 +32,7 @@ React.js 不是一个框架，它只是一个库。它只提供 UI （view）层
 
 HTML:
 
-```
+```html
   <body>
     <div class='wrapper'>
       <button class='like-btn'>
@@ -45,7 +45,7 @@ HTML:
 
 JavaScript：
 
-```
+```javascript
   const button = document.querySelector('.like-btn')
   const buttonText = button.querySelector('.like-text')
   let isLiked = false
@@ -63,7 +63,7 @@ JavaScript：
 
 现在我们来重新编写这个点赞功能，让它具备一定的可复用。这次我们先写一个类，这个类有 `render` 方法，这个方法里面直接返回一个表示 HTML 结构的字符串：
 
-```
+```javascript
   class LikeButton {
     render () {
       return `
@@ -78,7 +78,7 @@ JavaScript：
 
 然后可以用这个类来构建不同的点赞功能的实例，然后把它们插到页面中。
 
-```
+```javascript
   const wrapper = document.querySelector('.wrapper')
   const likeButton1 = new LikeButton()
   wrapper.innerHTML = likeButton1.render()
@@ -93,7 +93,7 @@ JavaScript：
 
 我们需要 DOM 结构，准确地来说：*我们需要这个点赞功能的 HTML 字符串表示的 DOM 结构*。假设我们现在有一个函数 `createDOMFromString` ，你往这个函数传入 HTML 字符串，但是它会把相应的 DOM 元素返回给你。这个问题就可以解决了。
 
-```
+```javascript
 // ::String => ::Document
 const createDOMFromString = (domString) => {
   const div = document.createElement('div')
@@ -104,7 +104,7 @@ const createDOMFromString = (domString) => {
 
 先不用管这个函数应该怎么实现，先知道它是干嘛的。拿来用就好，这时候用它来改写一下 `LikeButton` 类：
 
-```
+```javascript
   class LikeButton {
     render () {
       this.el = createDOMFromString(`
@@ -123,7 +123,7 @@ const createDOMFromString = (domString) => {
 
 因为现在 `render` 返回的是 DOM 元素，所以不能用 `innerHTML` 暴力地插入 wrapper。而是要用 DOM API 插进去。
 
-```
+```javascript
   const wrapper = document.querySelector('.wrapper')
 
   const likeButton1 = new LikeButton()
@@ -135,7 +135,7 @@ const createDOMFromString = (domString) => {
 
 现在你点击这两个按钮，每个按钮都会在控制台打印 `click`，说明事件绑定成功了。但是按钮上的文本还是没有发生改变，只要稍微改动一下 `LikeButton` 的代码就可以完成完整的功能：
 
-```
+```javascript
   class LikeButton {
     constructor () {
       this.state = { isLiked: false }
@@ -174,7 +174,7 @@ const createDOMFromString = (domString) => {
 
 这里要提出的一种解决方案：*一旦状态发生改变，就重新调用 render 方法，构建一个新的 DOM 元素*。这样做的好处是什么呢？好处就是你可以在 `render` 方法里面使用最新的 `this.state` 来构造不同 HTML 结构的字符串，并且通过这个字符串构造不同的 DOM 元素。页面就更新了！听起来有点绕，看看代码怎么写，修改原来的代码为：
 
-```
+```javascript
 class LikeButton{
     constructor(){
         this.state = {isLike : false}
@@ -218,7 +218,7 @@ class LikeButton{
 
 重新修改一下 `setState` 方法：
 
-```
+```javascript
 ...
     setState (state) {
       const oldEl = this.el
@@ -231,7 +231,7 @@ class LikeButton{
 
 使用这个组件的时候：
 
-```
+```javascript
 const likeButton = new LikeButton()
 wrapper.appendChild(likeButton.render()) // 第一次插入 DOM 元素
 likeButton.onStateChange = (oldEl, newEl) => {
@@ -252,7 +252,7 @@ likeButton.onStateChange = (oldEl, newEl) => {
 
 为了让代码更灵活，可以写更多的组件，我们把这种模式抽象出来，放到一个 `Component` 类当中：
 
-```
+```javascript
   class Component {
     setState (state) {
       const oldEl = this.el
@@ -275,7 +275,7 @@ likeButton.onStateChange = (oldEl, newEl) => {
 
 还有一个额外的 `mount` 的方法，其实就是把组件的 DOM 元素插入页面，并且在 `setState` 的时候更新页面：
 
-```
+```javascript
   const mount = (component, wrapper) => {
     wrapper.appendChild(component._renderDOM())
     component.onStateChange = (oldEl, newEl) => {
@@ -287,7 +287,7 @@ likeButton.onStateChange = (oldEl, newEl) => {
 
 这样的话我们重新写点赞组件就会变成：
 
-```
+```javascript
   class LikeButton extends Component {
     constructor () {
       super()
@@ -315,7 +315,7 @@ likeButton.onStateChange = (oldEl, newEl) => {
 
 这样还不够好。在实际开发当中，你可能需要给组件传入一些自定义的配置数据。例如说想配置一下点赞按钮的背景颜色，如果我给它传入一个参数，告诉它怎么设置自己的颜色。那么这个按钮的定制性就更强了。所以我们可以给组件类和它的子类都传入一个参数 `props`，作为组件的配置参数。修改 `Component` 的构造函数为：
 
-```
+```javascript
 ...
     constructor (props = {}) {
       this.props = props
@@ -325,7 +325,7 @@ likeButton.onStateChange = (oldEl, newEl) => {
 
 继承的时候通过 `super(props)` 把 `props` 传给父类，这样就可以通过 `this.props`获取到配置参数：
 
-```
+```javascript
   class LikeButton extends Component {
     constructor (props) {
       super(props)
@@ -357,7 +357,7 @@ likeButton.onStateChange = (oldEl, newEl) => {
 
 只要有了上面那个 `Component` 类和 `mount` 方法加起来不足40行代码就可以做到组件化。如果我们需要写另外一个组件，只需要像上面那样，简单地继承一下 `Component`类就好了：
 
-```
+```javascript
   class RedBlueButton extends Component {
     constructor (props) {
       super(props)
@@ -412,13 +412,13 @@ React.js 单独使用基本上是不可能的事情。不要指望着类似于 j
 
 安装好环境以后，只需要按照官网的指引安装 `create-react-app` 即可。
 
-```
+```bash
 npm install -g create-react-app
 ```
 
 这条命令会往我们的机器上安装一条叫 `create-react-app` 的命令，安装好以后就可以直接使用它来构建一个 react 的前端工程：
 
-```
+```bash
 create-react-app hello-react
 ```
 
@@ -432,7 +432,7 @@ create-react-app hello-react
 
 下载完以后我们就可以启动工程了，进入工程目录然后通过 npm 启动工程：
 
-```
+```bash
 cd hello-react
 npm start
 ```
@@ -445,7 +445,7 @@ npm start
 
 这一节我们通过一个简单的例子讲解 React.js 描述页面 UI 的方式。把 `src/index.js` 中的代码改成： 
 
-```
+```javascript
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
@@ -478,7 +478,7 @@ ReactDOM.render(
 
 思考一个问题：如何用 JavaScript 对象来表现一个 DOM 元素的结构，举个例子：
 
-```
+```javascript
 <div class='box' id='content'>
   <div class='title'>Hello</div>
   <button>Click</button>
@@ -489,7 +489,7 @@ ReactDOM.render(
 
 所以其实上面这个 HTML 所有的信息我们都可以用合法的 JavaScript 对象来表示：
 
-```
+```json
 {
   tag: 'div',
   attrs: { className: 'box', id: 'content'},
@@ -514,7 +514,7 @@ ReactDOM.render(
 
 上面的代码：
 
-```
+```javascript
 mport React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
@@ -537,7 +537,7 @@ ReactDOM.render(
 
 经过编译以后会变成：
 
-```
+```javascript
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
@@ -570,7 +570,7 @@ ReactDOM.render(
 
 有了这个表示 HTML 结构和信息的对象以后，就可以拿去构造真正的 DOM 元素，然后把这个 DOM 元素塞到页面上。这也是我们最后一段代码中 `ReactDOM.render` 所干的事情：
 
-```
+```javascript
 ReactDOM.render(
   <Header />,
   document.getElementById('root')
@@ -581,7 +581,7 @@ ReactDOM.render(
 
 所以可以总结一下从 JSX 到页面到底经过了什么样的过程： 
 
-```
+```javascript
 	Babel编译+React.js构造   					ReactDOM.render
 JSX =======================> JavaScript对象构造 ===================> DOM元素 ===> 插入页面
 
@@ -608,7 +608,7 @@ JSX =======================> JavaScript对象构造 ===================> DOM元�
 
 React.js中一切都是组件，用的React.js写的React.js组件。我们再编写React.js组件的时候，一般都需要继承React.js的`Component。`一个组件类必须实现一个`render`方法，这个方法必须返回一个`JSX`元素。但是需要注意到的是，必须要用一个外层的`JSX`元素将所有的内容包裹起来。返回并列多个`JSX`元素时不合法的，下面是错误的做法
 
-```
+```javascript
 ...
 render () {
   return (
@@ -621,7 +621,7 @@ render () {
 
 必须要用一个外层元素把内容进行包裹：
 
-```
+```javascript
 ...
 render () {
   return (
@@ -638,7 +638,7 @@ render () {
 
 在 JSX 当中你可以插入 JavaScript 的表达式，表达式返回的结果会相应地渲染到页面上。表达式用 `{}` 包裹。例如： 
 
-```
+```javascript
 ...
 render () {
   const word = '哈哈哈哈哈'
@@ -653,7 +653,7 @@ render () {
 
 页面上就显示“学习 React 的感觉是哈哈哈哈哈”。你也可以把它改成 `{1 + 2}`，它就会显示 “学习 React 的感觉是 3”。你也可以把它写成一个函数表达式返回： 
 
-```
+```javascript
 render() {
     return(
     	<div>
@@ -667,7 +667,7 @@ render() {
 
 表达式插入不仅仅可以用在标签内部，也可以用在标签的属性上，例如：
 
-```
+```javascript
 ...
 render () {
   const word = '哈哈哈哈哈';
@@ -691,7 +691,7 @@ render () {
 
 `{}` 上面说了，JSX 可以放置任何表达式内容。所以也可以放 JSX，实际上，我们可以在 `render` 函数内部根据不同条件返回不同的 JSX。例如：
 
-```
+```javascript
 ...
 render () {
   const isGoodWord = true
@@ -715,7 +715,7 @@ render () {
 
 如果你在表达式插入里面返回 `null` ，那么 React.js 会什么都不显示，相当于忽略了该表达式插入。结合条件返回的话，我们就做到显示或者隐藏某些元素：
 
-```
+```javascript
 ...
 render () {
   const isGoodWord = true
@@ -744,7 +744,7 @@ render () {
 
 同样的，如果你能理解 JSX 元素就是 JavaScript 对象。那么你就可以联想到，JSX 元素其实可以像 JavaScript 对象那样自由地赋值给变量，或者作为函数参数传递、或者作为函数的返回值。
 
-```
+```javascript
 ...
 render () {
   const isGoodWord = true
@@ -766,7 +766,7 @@ render () {
 
 再举一个例子：
 
-```
+```javascript
 ...
 renderGoodWord (goodWord, badWord) {
   const isGoodWord = true
@@ -797,7 +797,7 @@ render () {
 
 继续拓展前面的例子，现在我们已经有了 `Header` 组件了。假设我们现在构建一个新的组件叫 `Title`，它专门负责显示标题。你可以在 `Header` 里面使用 `Title`组件： 
 
-```
+```javascript
 class Title extends Component {
   render () {
     return (
@@ -819,7 +819,7 @@ class Header extends Component {
 
 我们可以直接在 `Header` 标签里面直接使用 `Title` 标签。就像是一个普通的标签一样。React.js 会在 `<Title />` 所在的地方把 `Title` 组件的 `render` 方法表示的 JSX 内容渲染出来，也就是说 `<h1>React 小书</h1>` 会显示在相应的位置上。如果现在我们在 `Header` 里面使用三个 `<Title />` ，那么就会有三个 `<h1 />` 显示在页面上。
 
-```
+```html
 <div>
   <Title />
   <Title />
@@ -831,7 +831,7 @@ class Header extends Component {
 
 现在让组件多起来。我们来构建额外的组件来构建页面，假设页面是由 `Header`、`Main` 、`Footer` 几个部分组成，由一个 `Index` 把它们组合起来。 
 
-```
+```javascript
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -894,7 +894,7 @@ ReactDOM.render(
 
 组件可以和组件组合在一起，组件内部可以使用别的组件。就像普通的 HTML 标签一样使用就可以。这样的组合嵌套，最后构成一个所谓的组件树，就正如上面的例子那样，`Index` 用了 `Header`、`Main`、`Footer`，`Header` 又使用了 `Title` 。这样用这样的树状结构表示它们之间的关系： 
 
-```
+```javascript
                                         ---------
                                         | Index |
                                         ---------
@@ -918,7 +918,7 @@ ReactDOM.render(
 
 在 React.js 里面监听事件是很容易的事情，你只需要给需要监听事件的元素加上属性类似于 `onClick`、`onKeyDown` 这样的属性，例如我们现在要给 `Title` 加上点击的事件监听： 
 
-```
+```react
 class Title extends Component {
   handleClickOnTitle () {
     console.log('Click on title.')
@@ -942,7 +942,7 @@ React.js 封装了不同类型的事件，这里就不一一列举，有兴趣�
 
 ### event 对象
 
-```
+```react
 class Title extends Component {
   handleClickOnTitle (e) {
     console.log(e.target.innerHTML)
@@ -962,7 +962,7 @@ class Title extends Component {
 
 一般在某个类的实例方法里面的 `this` 指的是这个实例本身。但是你在上面的 `handleClickOnTitle` 中把 `this` 打印出来，你会看到 `this` 是 `null` 或者 `undefined`。
 
-```
+```javascript
 ...
   handleClickOnTitle (e) {
     console.log(this) // => null or undefined
@@ -974,7 +974,7 @@ class Title extends Component {
 
 如果你想在事件函数当中使用当前的实例，你需要手动地将实例方法 `bind` 到当前实例上再传入给 React.js。
 
-```
+```react
 class Title extends Component {
   handleClickOnTitle (e) {
     console.log(this)
@@ -1014,7 +1014,7 @@ React.js 的事件监听方法需要手动 `bind` 到当前实例，这种模式
 
 我们还是拿点赞按钮做例子，它具有已点赞和未点赞两种状态。那么就可以把这个状态存储在 state 中。修改 `src/index.js` 为： 
 
-```
+```react
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
@@ -1043,7 +1043,7 @@ class LikeButton extends Component {
 
 最后构建一个 `Index` ，在它的 `render` 函数内使用 `LikeButton` 。然后把 `Index`渲染到页面上：
 
-```
+```react
 ...
 class Index extends Component {
   render () {
@@ -1073,7 +1073,7 @@ ReactDOM.render(
 
 ------
 
-```
+```react
 ...
   constructor (props) {
     super(props)
@@ -1097,7 +1097,7 @@ ReactDOM.render(
 
 这里还有要注意的是，当你调用 `setState` 的时候，*React.js 并不会马上修改 state*。而是把这个对象放到一个更新队列里面，稍后才会从队列当中把新的状态提取出来合并到 `state` 当中，然后再触发组件更新。这一点要好好注意。可以体会一下下面的代码：
 
-```
+```react
 ...
   handleClickOnLikeButton () {
     console.log(this.state.isLiked)
@@ -1113,7 +1113,7 @@ ReactDOM.render(
 
 所以如果你想在 `setState` 之后使用新的 `state` 来做后续运算就做不到了，例如：
 
-```
+```react
 ...
   handleClickOnLikeButton () {
     this.setState({ count: 0 }) // => this.state.count 还是 undefined
@@ -1127,7 +1127,7 @@ ReactDOM.render(
 
 这里就自然地引出了 `setState` 的第二种使用方式，可以接受一个函数作为参数。React.js 会把上一个 `setState` 的结果传入这个函数，你就可以使用该结果进行运算、操作，然后返回一个对象作为更新 `state` 的对象：
 
-```
+```react
 ...
   handleClickOnLikeButton () {
     this.setState((prevState) => {
@@ -1162,7 +1162,7 @@ ReactDOM.render(
 
 React.js 的 `props` 就可以帮助我们达到这个效果。每个组件都可以接受一个 `props`参数，它是一个对象，包含了所有你对这个组件的配置。就拿我们点赞按钮做例子：
 
-```
+```react
 class LikeButton  extends Component {
     constructor () {
         super();
@@ -1189,7 +1189,7 @@ class LikeButton  extends Component {
 
 那么怎么把 `props` 传进去呢？*在使用一个组件的时候，可以把参数放在标签的属性当中，所有的属性都会作为 props 对象的键值*：
 
-```
+```react
 class Index extends Component {
   render () {
     return (
@@ -1205,7 +1205,7 @@ class Index extends Component {
 
 前面的章节我们说过，JSX 的表达式插入可以在标签属性上使用。所以其实可以把任何类型的数据作为组件的参数，包括字符串、数字、对象、数组、甚至是函数等等。例如现在我们把一个对象传给点赞组件作为参数：
 
-```
+```react
 class Index extends Component {
   render () {
     return (
@@ -1221,7 +1221,7 @@ class Index extends Component {
 
 这时候，点赞按钮的内部就要用 `this.props.wordings` 来获取到到参数了：
 
-```
+```react
 class LikeButton extends Component {
   constructor () {
     super()
@@ -1252,7 +1252,7 @@ class LikeButton extends Component {
 
 甚至可以往组件内部传入函数作为参数：
 
-```
+```react
 class Index extends Component {
   render () {
     return (
@@ -1268,7 +1268,7 @@ class Index extends Component {
 
 这样可以通过 `this.props.onClick` 获取到这个传进去的函数，修改 `LikeButton `的 `handleClickOnLikeButton` 方法：
 
-```
+```react
 ...
   handleClickOnLikeButton () {
     this.setState({
@@ -1287,7 +1287,7 @@ class Index extends Component {
 
 上面的组件默认配置我们是通过 `||` 操作符来实现。这种需要默认配置的情况在 React.js 中非常常见，所以 React.js 也提供了一种方式 `defaultProps`，可以方便的做到默认配置。
 
-```
+```react
 class LikeButtons extends Component {
     static default props = {
         likeText ： '取消'，
@@ -1313,7 +1313,7 @@ class LikeButtons extends Component {
 
 注意，我们给点赞组件加上了以下的代码：
 
-```
+```react
   static defaultProps = {
     likedText: '取消',
     unlikedText: '点赞'
@@ -1326,7 +1326,7 @@ class LikeButtons extends Component {
 
 `props` 一旦传入进来就不能改变。修改上面的例子中的 `handleClickOnLikeButton` ：
 
-```
+```react
 ...
   handleClickOnLikeButton () {
     this.props.likedText = '取消'
@@ -1345,7 +1345,7 @@ class LikeButtons extends Component {
 
 修改上面的例子的 `Index` 组件：
 
-```
+```react
 class Index extends Component {
   constructor () {
     super()
@@ -1410,7 +1410,7 @@ class Index extends Component {
 
 React.js 非常鼓励无状态组件，在 0.14 版本引入了函数式组件——一种定义不能使用 `state` 组件，例如一个原来这样写的组件：
 
-```
+```react
 class HelloWorld extends Component {
   constructor() {
     super()
@@ -1430,7 +1430,7 @@ class HelloWorld extends Component {
 
 用函数式组件的编写方式就是：
 
-```
+```react
 const HelloWorld = (props) => {
     const sayHi = (e) => alert('Hello World!')
     return (
@@ -1457,7 +1457,7 @@ React.js 当然也允许我们处理列表数据，但在使用 React.js 处理�
 
 假设现在我们有这么一个用户列表数据，存放在一个数组当中：
 
-```
+```json
 const users = [
   { username: 'Jerry', age: 21, gender: 'male' },
   { username: 'Tomy', age: 22, gender: 'male' },
@@ -1468,7 +1468,7 @@ const users = [
 
 如果现在要把这个数组里面的数据渲染页面上要怎么做？开始之前要补充一个知识。之前说过 JSX 的表达式插入 `{}` 里面可以放任何数据，如果我们往 `{}` 里面放一个存放 JSX 元素的数组会怎么样？
 
-```
+```react
 ...
 
 class Index extends Component {
@@ -1497,7 +1497,7 @@ ReactDOM.render(
 
 知道这一点以后你就可以知道怎么用循环把元素渲染到页面上：循环上面用户数组里面的每一个用户，为每个用户数据构建一个 JSX，然后把 JSX 放到一个新的数组里面，再把新的数组插入 `render` 方法的 JSX 里面。看看代码怎么写：
 
-```
+```react
 const users = [
   { username: 'Jerry', age: 21, gender: 'male' },
   { username: 'Tomy', age: 22, gender: 'male' },
@@ -1531,7 +1531,7 @@ ReactDOM.render(
 
 但我们一般不会手动写循环来构建列表的 JSX 结构，可以直接用 ES6 自带的 `map`（不了解 `map` 函数的同学可以先了解相关的知识再来回顾这里），代码可以简化成： 
 
-```
+```react
 class Index extends Component {
     render() {        
 		return(
@@ -1555,7 +1555,7 @@ class Index extends Component {
 
 这样的模式在 JavaScript 中非常常见，一般来说，在 React.js 处理列表就是用 `map` 来处理、渲染的。现在进一步把渲染单独一个用户的结构抽离出来作为一个组件，继续优化代码： 
 
-```
+```react
 const users = [
   { username: 'Jerry', age: 21, gender: 'male' },
   { username: 'Tomy', age: 22, gender: 'male' },
@@ -1601,7 +1601,7 @@ ReactDOM.render(
 
 React.js 的是非常高效的，它高效依赖于所谓的 Virtual-DOM 策略。简单来说，能复用的话 React.js 就会尽量复用，没有必要的话绝对不碰 DOM。对于列表元素来说也是这样，但是处理列表元素的复用性会有一个问题：元素可能会在一个列表中改变位置。例如：
 
-```
+```html
 <div>a</div>
 <div>b</div>
 <div>c</div>
@@ -1609,7 +1609,7 @@ React.js 的是非常高效的，它高效依赖于所谓的 Virtual-DOM 策略�
 
 假设页面上有这么3个列表元素，现在改变一下位置：
 
-```
+```html
 <div>a</div>
 <div>c</div>
 <div>b</div>
@@ -1617,7 +1617,7 @@ React.js 的是非常高效的，它高效依赖于所谓的 Virtual-DOM 策略�
 
 `c` 和 `b` 的位置互换了。但其实 React.js 只需要交换一下 DOM 位置就行了，但是它并不知道其实我们只是改变了元素的位置，所以它会重新渲染后面两个元素（再执行 Virtual-DOM 策略），这样会大大增加 DOM 操作。但如果给每个元素加上唯一的标识，React.js 就可以知道这两个元素只是交换了位置：
 
-```
+```html
 <div key='a'>a</div>
 <div key='b'>b</div>
 <div key='c'>c</div>
@@ -1629,7 +1629,7 @@ React.js 的是非常高效的，它高效依赖于所谓的 Virtual-DOM 策略�
 
 在上面的例子当中，每个 `user` 没有 `id` 可以用，可以直接用循环计数器 `i` 作为 `key`：
 
-```
+```react
 ...
 class Index extends Component {
   render () {

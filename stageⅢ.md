@@ -36,13 +36,13 @@
 
 *高阶组件就是一个函数，传给它一个组件，它返回一个新的组件。*
 
-```
+```react
 const NewCompoent = higherOrderComponent(OldComponent)
 ```
 
 高阶组件是一个函数（而不是组件），它接受一个组件作为参数，返回一个新的组件。这个新的组件会使用你传给它的组件作为子组件。
 
-```
+```react
 import React,{Component} from 'react'
 
 export default (WrappedComponent) => {
@@ -58,7 +58,7 @@ export default (WrappedComponent) => {
 
 看起来好像就是简单的狗将了一个新的组件类 `NewComponent`,然后把传进去的 `WrappedComponent`渲染出来。但是我们可以给 `NewComponent`做一些数据启动工作
 
-```
+```react
 import React , { Component } from 'react'
 export default (WrappedComponent, name) => {
     class NewComponent extends Component {
@@ -82,7 +82,7 @@ export default (WrappedComponent, name) => {
 
 这个高阶组件有什么用呢？假设上面的代码是在 `src/wrapWithLoadData.js` 文件中的，我们可以在别的地方这么用它：
 
-```
+```react
 import wrapWithLoadData from './wrapWithLoadData'
 
 class InputWithUserName extends Component {
@@ -100,7 +100,7 @@ export default InputWithUserName
 
 别人用这个组件的时候实际是用了*被加工过*的组件：
 
-```
+```react
 import InputWithUserName from './InputWithUserName'
 
 class Index extends Component {
@@ -118,7 +118,7 @@ class Index extends Component {
 
 如果现在我们需要另外一个文本输入框组件，它也需要 LocalStorage 加载 `'content'` 字段的数据。我们只需要定义一个新的 `TextareaWithContent`：
 
-```
+```react
 import wrapWithLoadData from './wrapWithLoadData'
 
 class TextareaWithContent extends Component {
@@ -144,7 +144,7 @@ export default TextareaWithContent
 
 假设现在我们需求变化了，现在要的是通过 Ajax 加载数据而不是从 LocalStorage 加载数据。我们只需要新建一个 `wrapWithAjaxData` 高阶组件：
 
-```
+```react
 import React , { Component } from 'react'
 
 export default (WrappendComponent, name) => {
@@ -168,7 +168,7 @@ export default (WrappendComponent, name) => {
 
 其实就是改了一下 `wrapWithLoadData` 的 `componentWillMount` 中的逻辑，改成了从服务器加载数据。现在只需要把 `InputWithUserName` 稍微改一下： 
 
-```
+```react
 import wrapWithAjaxData from './WrapWithAjaxData'
 
 class InputWithUserName extends Component {
@@ -188,7 +188,7 @@ export default InputWithUserName
 
 
 
-```
+```react
 ...
     componentWillMount () {
       ajax.get('/data/' + this.props.data, (data) => {
@@ -200,7 +200,7 @@ export default InputWithUserName
 
 它会用传进来的 `props.data` 去服务器取数据。这时候修改 `InputWithUserName`：
 
-```
+```react
 import wrapWithLoadData from './wrapWithLoadData'
 import wrapWithAjaxData from './wrapWithAjaxData'
 
@@ -227,7 +227,7 @@ export default InputWithUserName
 
 大家对这种在挂载阶段从 LocalStorage 加载数据的模式都很熟悉，在上一阶段的实战中，`CommentInput` 和 `CommentApp` 都用了这种方式加载、保存数据。实际上我们可以构建一个高阶组件把它们的相同的逻辑抽离出来，构建一个高阶组件 `wrapWithLoadData`：
 
-```
+```react
 export default (WrappedComponent, name) => {
     class LocalStorageAction extends Component {
         constructor() {
@@ -269,7 +269,7 @@ export default (WrappedComponent, name) => {
 
 `CommentApp` 可以这样使用： 
 
-```
+```react
 class CommentApp extends Component {
     static propTypes = {
         data: PropTypes.any,
@@ -336,7 +336,7 @@ React.js 的 context 就是这么一个东西，某个组件只要往自己的 c
 
 我们看看 React.js 的 context 代码怎么写，我们先把整体的组件树搭建起来，这里不涉及到 context 相关的内容：
 
-```
+```react
 class Index extends Component {
     render() {
         return (
@@ -396,7 +396,7 @@ ReactDOM.render(
 
 现在我们修改 `Index`，让它往自己的 context 里面放一个 `themeColor`：
 
-```
+```react
 class Index extends Component {
     static childContextTypes = {
         themeColor: PropTypes.string
@@ -425,7 +425,7 @@ class Index extends Component {
 
 现在我们已经完成了 `Index` 往 context 里面放置状态的工作了，接下来我们要看看子组件怎么获取这个状态，修改 `Index` 的孙子组件 `Title`：
 
-```
+```react
 class Title extends Component {
     static contextTypes = {
         themeColor: PropTypes.string
@@ -444,7 +444,7 @@ class Title extends Component {
 
 如果我们要改颜色，只需要在 `Index` 里面 `setState` 就可以了，子组件会重新渲染，渲染的时候会重新取 context 的内容，例如我们给 `Index` 调整一下颜色：
 
-```
+```react
 ...
   componentWillMount () {
     this.setState({ themeColor: 'green' })
@@ -478,7 +478,7 @@ context 打破了组件和组件之间通过 `props` 传递数据的规范，极
 
 用 `create-react-app` 新建一个项目 `make-redux`，修改 `public/index.html` 里面的 `body` 结构为：
 
-```
+```react
   <body>
     <div id='title'></div>
     <div id='content'></div>
@@ -487,7 +487,7 @@ context 打破了组件和组件之间通过 `props` 传递数据的规范，极
 
 删除 `src/index.js` 里面所有的代码，添加下面代码，代表我们应用的状态：
 
-```
+```react
 const appState = {
   title: {
     text: 'React.js 小书',
@@ -502,7 +502,7 @@ const appState = {
 
 我们新增几个渲染函数，它会把上面状态的数据渲染到页面上：
 
-```
+```react
 function renderApp (appState) {
   renderTitle(appState.title)
   renderContent(appState.content)
@@ -523,13 +523,13 @@ function renderContent (content) {
 
 很简单，`renderApp` 会调用 `rendeTitle` 和 `renderContent`，而这两者会把 `appState`里面的数据通过原始的 DOM 操作更新到页面上，调用：
 
-```
+```react
 renderApp(appState)
 ```
 
 这是一个很简单的 App，但是它存在一个重大的隐患，我们渲染数据的时候，使用的是一个共享状态 `appState`，*每个人都可以修改它*。如果我在渲染之前做了一系列其他操作：
 
-```
+```react
 loadDataFromServer()
 doSomethingUnexpected()
 doSomthingMore()
@@ -547,7 +547,7 @@ renderApp(appState)
 
 我们定义一个函数，叫 `dispatch`，它专门负责数据的修改：
 
-```
+```react
 function dispatch(action) {
     switch(action.type){
         case 'UPDATE_TITLE_TEXT':
@@ -568,14 +568,14 @@ function dispatch(action) {
 
 任何的模块如果想要修改 `appState.title.text`，必须大张旗鼓地调用 `dispatch`：
 
-```
+```react
 dispatch({ type: 'UPDATE_TITLE_TEXT', text: '《React.js 小书》' }) // 修改标题文本
 dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' }) // 修改标题颜色
 ```
 
 我们来看看有什么好处：
 
-```
+```react
 loadDataFromServer() // => 里面可能通过 dispatch 修改标题文本
 doSomethingUnexpected()
 doSomthingMore() // => 里面可能通过 dispatch 修改标题颜色
@@ -599,7 +599,7 @@ renderApp(appState)
 
 本节完整的代码如下：
 
-```
+```react
 let appState = {
   title: {
     text: 'React.js 小书',
@@ -657,7 +657,7 @@ renderApp(appState) // 把新的数据渲染到页面上
 
 我们有了 `appState` 和 `dispatch`：
 
-```
+```react
 let appState = {
   title: {
     text: 'React.js 小书',
@@ -685,7 +685,7 @@ function dispatch (action) {
 
 现在我们把它们集中到一个地方，给这个地方起个名字叫做 `store`，然后构建一个函数 `createStore`，用来专门生产这种 `state` 和 `dispatch` 的集合，这样别的 App 也可以用这种模式了：
 
-```
+```react
 function createStore (state, stateChanger) {
     const getState = () => state
     const dispatch = (action) => stateChanger(state, action)
@@ -701,7 +701,7 @@ function createStore (state, stateChanger) {
 
 现在有了 `createStore`，我们可以这么修改原来的代码，保留原来所有的渲染函数不变，修改数据生成的方式：
 
-```
+```react
 let appState = {
   title: {
     text: 'React.js 小书',
@@ -741,7 +741,7 @@ renderApp(store.getState()) // 把新的数据渲染到页面上
 
 你说这好办，往 `dispatch`里面加 `renderApp` 就好了，但是这样 `createStore` 就不够通用了。我们希望用一种通用的方式“监听”数据变化，然后重新渲染页面，这里要用到观察者模式。修改 `createStore`：
 
-```
+```react
 function createStore(state, stateChanger){
     const listeners = []
     const subscribe = (listener) => listeners.push(listener)
@@ -758,7 +758,7 @@ function createStore(state, stateChanger){
 
 我们修改了 `dispatch`，每次当它被调用的时候，除了会调用 `stateChanger` 进行数据的修改，还会遍历 `listeners` 数组里面的函数，然后一个个地去调用。相当于我们可以通过 `subscribe` 传入数据变化的监听函数，每当 `dispatch` 的时候，监听函数就会被调用，这样我们就可以在每当数据变化时候进行重新渲染：
 
-```
+```react
 const store = createStore(appState, stateChanger)
 store.subscribe(() => renderApp(store.getState()))
 
@@ -772,7 +772,7 @@ store.dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' }) // 修改标题颜
 
 我们只需要 `subscribe` 一次，后面不管如何 `dispatch` 进行修改数据，`renderApp`函数都会被重新调用，页面就会被重新渲染。这样的订阅模式还有好处就是，以后我们还可以拿同一块数据来渲染别的页面，这时 `dispatch` 导致的变化也会让每个页面都重新渲染：
 
-```
+```react
 const store = createStore(appState, stateChanger)
 store.subscribe(() => renderApp(store.getState()))
 store.subscribe(() => renderApp2(store.getState()))
@@ -782,7 +782,7 @@ store.subscribe(() => renderApp3(store.getState()))
 
 本节的完整代码：
 
-```
+```react
 function createStore(state, stateChanger){
     const listeners = []
     const subscribe = (listener) => listeners.push(listener)
@@ -858,7 +858,7 @@ store.dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' }) // 修改标题颜
 
 ### 函数的返回结果只依赖于它的参数
 
-```
+```react
 const a = 1
 const foo = (b) => a + b
 foo(2) // => 3
@@ -866,7 +866,7 @@ foo(2) // => 3
 
 `foo` 函数不是一个纯函数，因为它返回的结果依赖于外部变量 `a`，我们在不知道 `a`的值的情况下，并不能保证 `foo(2)` 的返回值是 3。虽然 `foo` 函数的代码实现并没有变化，传入的参数也没有变化，但它的返回值却是*不可预料*的，现在 `foo(2)` 是 3，可能过了一会就是 4 了，因为 a 可能发生了变化变成了 2。
 
-```
+```react
 const a = 1
 const foo = (x, b) => x + b
 foo(1, 2) // => 3
@@ -882,7 +882,7 @@ foo(1, 2) // => 3
 
 我们修改一下 `foo`：
 
-```
+```react
 const a = 1
 const foo = (obj, b) => {
   return obj.x + b
@@ -894,7 +894,7 @@ counter.x // => 1
 
 我们把原来的 `x` 换成了 `obj`，我现在可以往里面传一个对象进行计算，计算的过程里面并不会对传入的对象进行修改，计算前后的 `counter` 不会发生任何变化，计算前是 1，计算后也是 1，它现在是纯的。但是我再稍微修改一下它：
 
-```
+```react
 const a = 1
 const foo = (obj, b) => {
   obj.x = 2
@@ -909,7 +909,7 @@ counter.x // => 2
 
 但是你在函数内部构建的变量，然后进行数据的修改不是副作用：
 
-```
+```react
 const foo = (b) => {
   const obj = { x: 1 }
   obj.x = 2
@@ -939,7 +939,7 @@ const foo = (b) => {
 
 细心的朋友可以发现，其实我们之前的例子当中是有比较严重的*性能问题*的。我们在每个渲染函数的开头打一些 Log 看看：
 
-```
+```react
 function renderApp (appState) {
   console.log('render app...')
   renderTitle(appState.title)
@@ -963,7 +963,7 @@ function renderContent (content) {
 
 依旧执行一次初始化渲染，和两次更新，这里代码保持不变：
 
-```
+```react
 const store = createStore(appState, stateChanger)
 store.subscribe(() => renderApp(store.getState())) // 监听数据变化
 
@@ -974,7 +974,7 @@ store.dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' }) // 修改标题颜
 
 可以在控制台看到： 
 
-```
+```react
 render app...
 render title...
 render content...
@@ -990,7 +990,7 @@ render content...
 
 这里提出的解决方案是，在每个渲染函数执行渲染操作之前先做个判断，判断传入的新数据和旧的数据是不是相同，相同的话就不渲染了。
 
-```
+```react
 function renderApp(newAppState, oldAppState = {}){ //防止 oldAppState 没有传入，所以加了默认参数oldAppState = {}
 	if(newAppState == oldAppState){
         return //数据就不渲染了
@@ -1019,7 +1019,7 @@ function renderContent (newContent, oldContent = {}) {
 
 然后我们用一个 `oldState` 变量保存旧的应用状态，在需要重新渲染的时候把新旧数据传进入去：
 
-```
+```react
 const store = createStore(appState, stateChanger)
 let oldState = store.getState() // 缓存旧的 state
 store.subscribe(() => {
@@ -1032,7 +1032,7 @@ store.subscribe(() => {
 
 希望到这里没有把大家忽悠到，*上面的代码根本不会达到我们的效果*。看看我们的 `stateChanger`：
 
-```
+```react
 function stateChanger (state, action) {
   switch (action.type) {
     case 'UPDATE_TITLE_TEXT':
@@ -1049,7 +1049,7 @@ function stateChanger (state, action) {
 
 即使你修改了 `state.title.text`，但是 `state` 还是原来那个 `state`，`state.title`还是原来的 `state.title`，这些引用指向的还是原来的对象，只是对象内的内容发生了改变。所以即使你在每个渲染函数开头加了那个判断又什么用？这就像是下面的代码那样自欺欺人：
 
-```
+```react
 unction stateChanger (state, action) {
   switch (action.type) {
     case 'UPDATE_TITLE_TEXT':
@@ -1066,7 +1066,7 @@ unction stateChanger (state, action) {
 
 即使你修改了 `state.title.text`，但是 `state` 还是原来那个 `state`，`state.title`还是原来的 `state.title`，这些引用指向的还是原来的对象，只是对象内的内容发生了改变。所以即使你在每个渲染函数开头加了那个判断又什么用？这就像是下面的代码那样自欺欺人：
 
-```
+```react
 let appState = {
   title: {
     text: 'React.js 小书',
@@ -1088,27 +1088,27 @@ oldState !== appState // false，其实两个引用指向的是同一个对象�
 
 希望大家都知道这种 ES6 的语法：
 
-```
+```react
 onst obj = { a: 1, b: 2}
 const obj2 = { ...obj } // => { a: 1, b: 2 }
 ```
 
 `const obj2 = { ...obj }` 其实就是新建一个对象 `obj2`，然后把 `obj` 所有的属性都复制到 `obj2` 里面，相当于对象的浅复制。上面的 `obj` 里面的内容和 `obj2` 是完全一样的，但是却是两个不同的对象。除了浅复制对象，还可以覆盖、拓展对象属性：
 
-```
+```react
 const obj = { a: 1, b: 2}
 const obj2 = { ...obj, b: 3, c: 4} // => { a: 1, b: 3, c: 4 }，覆盖了 b，新增了 c
 ```
 
 我们可以把这种特性应用在 `state` 的更新上，我们禁止直接修改原来的对象，一旦你要修改某些东西，你就得把修改路径上的所有对象复制一遍，例如，我们不写下面的修改代码：
 
-```
+```react
 appState.title.text = '《React.js 小书》'
 ```
 
 取而代之的是，我们新建一个 `appState`，新建 `appState.title`，新建 `appState.title.text`：
 
-```
+```react
 let newAppState = { // 新建一个 newAppState
   ...appState, // 复制 appState 里面的内容
   title: { // 用一个新的对象覆盖原来的 title 属性
@@ -1124,7 +1124,7 @@ let newAppState = { // 新建一个 newAppState
 
 `appState` 和 `newAppState` 其实是两个不同的对象，因为对象浅复制的缘故，其实它们里面的属性 `content` 指向的是同一个对象；但是因为 `title` 被一个新的对象覆盖了，所以它们的 `title` 属性指向的对象是不同的。同样地，修改 `appState.title.color`： 
 
-```
+```react
 let newAppState1 = {//新建一个newAppState1
 	...newAppState, //复制 newAppState1里面的内容
 	title: { //用一个新的对象覆盖原来的 title 属性
@@ -1150,7 +1150,7 @@ appState.content !== appState.content // false，两个对象引用相同，数�
 
 我们修改 `stateChanger`，让它修改数据的时候，并不会直接修改原来的数据 `state`，而是产生上述的共享结构的对象：
 
-```
+```react
 function stateChanger(state, action){
     switch(action.type){
         case 'UPDATE_TITLE_TEXT':
@@ -1179,7 +1179,7 @@ function stateChanger(state, action){
 
 因为 `stateChanger` 不会修改原来对象了，而是返回对象，所以我们需要修改一下 `createStore`。让它用每次 `stateChanger(state, action)` 的调用结果覆盖原来的 `state`：
 
-```
+```react
 function createStore(state,stateChanger){
     const listeners = []
     const subscribe = (listener) => listeners.push(listener)
@@ -1194,7 +1194,7 @@ function createStore(state,stateChanger){
 
 保持上面的渲染函数开头的对象判断不变，再看看控制台： 
 
-```
+```react
 render app...
 render title...
 render content...
@@ -1206,7 +1206,7 @@ render title...
 
 前三个是首次渲染。后面的 `store.dispatch` 导致的重新渲染都没有关于 `content` 的 Log 了。因为产生共享结构的对象，新旧对象的 `content` 引用指向的对象是一样的，所以触发了 `renderContent` 函数开头的：
 
-```
+```react
 ...
   if (newContent === oldContent) return
 ...
@@ -1216,7 +1216,7 @@ render title...
 
 本节完整代码：
 
-```
+```react
 function createStore(state, stateChanger){
     const listeners = []
     const subscribe = (listener) => listeners.push(listener)
@@ -1306,7 +1306,7 @@ store.dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' }) // 修改标题颜
 
 经过了这么多节的优化，我们有了一个很通用的 `createStore`：
 
-```
+```react
 function createStore (state, stateChanger) {
   const listeners = []
   const subscribe = (listener) => listeners.push(listener)
@@ -1321,7 +1321,7 @@ function createStore (state, stateChanger) {
 
 它的使用方式是：
 
-```
+```react
 let appState = {
   title: {
     text: 'React.js 小书',
@@ -1362,7 +1362,7 @@ const store = createStore(appState, stateChanger)
 
 我们再优化一下，其实 `appState` 和 `stateChanger` 可以合并到一起去：
 
-```
+```react
 function stateChanger (state, action) {
   if (!state) {
     return {
@@ -1401,7 +1401,7 @@ function stateChanger (state, action) {
 
 `stateChanger` 现在既充当了获取初始化数据的功能，也充当了生成更新数据的功能。如果有传入 `state` 就生成更新数据，否则就是初始化数据。这样我们可以优化 `createStore` 成一个参数，因为 `state` 和 `stateChanger` 合并到一起了： 
 
-```
+```react
 function createStore (stateChanger) {
   let state = null
   const listeners = []
@@ -1420,7 +1420,7 @@ function createStore (stateChanger) {
 
 我们给 `stateChanger` 这个玩意起一个通用的名字：reducer，不要问为什么，它就是个名字而已，修改 `createStore` 的参数名字：
 
-```
+```react
 unction createStore (reducer) {
   let state = null
   const listeners = []
@@ -1447,7 +1447,7 @@ reducer 是不允许有副作用的。你不能在里面操作 DOM，也不能�
 
 现在我们可以用这个 `createStore` 来构建不同的 `store` 了，只要给它传入符合上述的定义的 `reducer` 即可：
 
-```
+```react
 function themeReducer(state, action) {
     if(!state) return{
         themeName:'Red theme',
@@ -1486,7 +1486,7 @@ const store = createStore(themeReducer)
 
 `createStore` 现在可以直接拿来用了，套路就是：
 
-```
+```react
 // 定义一个 reducer
 function reducer(state, action){
     /* 初始化 state 和 switch case */
@@ -1526,7 +1526,7 @@ store.dispatch(...)
 
 用 `create-react-app` 新建一个工程，然后安装一个 React 提供的第三方库 `prop-types`：
 
-```
+```bash
 npm install --save prop-types
 ```
 
@@ -1534,7 +1534,7 @@ npm install --save prop-types
 
 修改 `src/Header.js`：
 
-```
+```react
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
@@ -1551,7 +1551,7 @@ export default Header
 
 修改 `src/ThemeSwitch.js`：
 
-```
+```react
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
@@ -1571,7 +1571,7 @@ export default ThemeSwitch
 
 修改 `src/Content.js`：
 
-```
+```react
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ThemeSwitch from './ThemeSwitch'
@@ -1592,7 +1592,7 @@ export default Content
 
 修改 `src/index.js`：
 
-```
+```react
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
@@ -1627,7 +1627,7 @@ ReactDOM.render(
 
 既然要把 store 和 context 结合起来，我们就先构建 store。在 `src/index.js` 加入之前创建的 `createStore` 函数，并且构建一个 `themeReducer` 来生成一个 `store`： 
 
-```
+```react
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
@@ -1665,7 +1665,7 @@ const store = createStore(themeReducer)
 
 `themeReducer` 定义了一个表示主题色的状态 `themeColor`，并且规定了一种操作 `CHNAGE_COLOR`，只能通过这种操作修改颜色。现在我们把 `store` 放到 `Index` 的 context 里面，这样每个子组件都可以获取到 `store` 了，修改 `src/index.js` 里面的 `Index`： 
 
-```
+```react
 class Index extends Component {
     static childContextType ={
         store:PropTypes.object
@@ -1686,7 +1686,7 @@ class Index extends Component {
 
 然后修改 `src/Header.js`，让它从 `Index` 的 context 里面获取 `store`，并且获取里面的 `themeColor` 状态来设置自己的颜色： 
 
-```
+```react
 class Header extends Component {
     static contextTypes = {
         store: PropTypes.object
@@ -1719,7 +1719,7 @@ class Header extends Component {
 
 如法炮制 `Content.js`：
 
-```
+```react
 class Content extends Component {
   static contextTypes = {
     store: PropTypes.object
@@ -1754,7 +1754,7 @@ class Content extends Component {
 
 还有 `src/ThemeSwitch.js`：
 
-```
+```react
 class ThemeSwitch extends Component {
   static contextTypes = {
     store: PropTypes.object
@@ -1792,7 +1792,7 @@ class ThemeSwitch extends Component {
 
 当然现在点按钮还是没什么效果，我们接下来给按钮添加事件。其实也很简单，监听 `onClick` 事件然后 `store.dispatch` 一个 `action` 就好了，修改 `src/ThemeSwitch.js`：
 
-```
+```react
 class ThemeSwitch extends Component {
   static contextTypes = {
     store: PropTypes.object
@@ -1843,7 +1843,7 @@ class ThemeSwitch extends Component {
 
 给 `Header.js`、`Content.js`、`ThemeSwitch.js` 的 `componentWillMount` 生命周期都加上监听数据变化重新渲染的代码：
 
-```
+```react
 ...
   componentWillMount () {
     const { store } = this.context
@@ -1884,7 +1884,7 @@ class ThemeSwitch extends Component {
 
 我们把这个高阶组件起名字叫 `connect`，因为它把 Dumb 组件和 context 连接（connect）起来了：
 
-```
+```react
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
@@ -1907,7 +1907,7 @@ export connect = (WrappedComponent ) => {
 
 但是每个传进去的组件需要 store 里面的数据都不一样的，所以除了给高阶组件传入 Dumb 组件以外，还需要告诉高级组件我们需要什么数据，高阶组件才能正确地去取数据。为了解决这个问题，我们可以给高阶组件传入类似下面这样的函数：
 
-```
+```react
 const mapStateToProps = (state) => {
     return {
       themeColor: state.themeColor,
@@ -1920,7 +1920,7 @@ const mapStateToProps = (state) => {
 
 这个函数会接受 `store.getState()`的结果作为参数，然后返回一个对象，这个对象是根据`state`生成的。`mapStateTopProps`相当于告知了`Connect`应该如何取`store`取数据，然后可以把这函数的返回结果传给被包装的组件：
 
-```
+```react
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
@@ -1942,7 +1942,7 @@ export const connect = (mapStateToProps) => (WrappedComponent) => {
 
 `connect` 现在是接受一个参数 `mapStateToProps`，然后返回一个函数，这个返回的函数才是高阶组件。它会接受一个组件作为参数，然后用 `Connect` 把组件包装以后再返回。 `connect` 的用法是：
 
-```
+```react
 ...
 const mapStateToProps = (state) => {
   return {
@@ -1957,7 +1957,7 @@ Header = connect(mapStateToProps)(Header)
 
 我们把上面 `connect` 的函数代码单独分离到一个模块当中，在 `src/` 目录下新建一个 `react-redux.js`，把上面的 `connect` 函数的代码复制进去，然后就可以在 `src/Header.js` 里面使用了：
 
-```
+```react
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from './react-redux'
@@ -1984,7 +1984,7 @@ export default Header
 
 可以看到 `Header` 删掉了大部分关于 context 的代码，它除了 `props` 什么也不依赖，它是一个 Pure Component，然后通过 `connect` 取得数据。我们不需要知道 `connect` 是怎么和 context 打交道的，只要传一个 `mapStateToProps` 告诉它应该怎么取数据就可以了。同样的方式修改 `src/Content.js`： 
 
-```
+```react
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ThemeSwitch from './ThemeSwitch'
@@ -2017,7 +2017,7 @@ export default Content
 
 `connect` 还没有监听数据变化然后重新渲染，所以现在点击按钮只有按钮会变颜色。我们给 `connect` 的高阶组件增加监听数据变化重新渲染的逻辑，稍微重构一下 `connect`：
 
-```
+```react
 export const connect = (mapStateToProps) => (WrappedComponent) => {
     class Connect extends Component {
         static contextTypes = {
@@ -2064,7 +2064,7 @@ export const connect = (mapStateToProps) => (WrappedComponent) => {
 
 在重构 `ThemeSwitch` 的时候我们发现，`ThemeSwitch` 除了需要 `store` 里面的数据以外，还需要 `store` 来 `dispatch`： 
 
-```
+```react
 ...
   // dispatch action 去改变颜色
   handleSwitchColor (color) {
@@ -2081,7 +2081,7 @@ export const connect = (mapStateToProps) => (WrappedComponent) => {
 
 想一下，既然可以通过给 `connect` 函数传入 `mapStateToProps` 来告诉它如何获取、整合状态，我们也可以想到，可以给它传入另外一个参数来告诉它我们的组件需要如何触发 `dispatch`。我们把这个参数叫 `mapDispatchToProps`：
 
-```
+```react
 const mapDispatchToProps = (dispatch) => {
     return {
         onSwitColor: (color) => {
@@ -2095,7 +2095,7 @@ const mapDispatchToProps = (dispatch) => {
 
 调整 `connect` 让它能接受这样的 `mapDispatchToProps`：
 
-```
+```react
 export const connect = (mapStateToProps, mapDispatchToProps) => (WrappedComponent) =>{
     class Connect extends Component {
         static contextType = {
@@ -2136,7 +2136,7 @@ export const connect = (mapStateToProps, mapDispatchToProps) => (WrappedComponen
 
 这时候我们就可以重构 `ThemeSwitch`，让它摆脱 `store.dispatch`：
 
-```
+```react
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from './react-redux'
@@ -2190,7 +2190,7 @@ export default ThemeSwitch
 
 我们要把 context 相关的代码从所有业务组件中清除出去，现在的代码里面还有一个地方是被污染的。那就是 `src/index.js` 里面的 `Index`：
 
-```
+```react
 ...
 class Index extends Component {
   static childContextTypes = {
@@ -2221,7 +2221,7 @@ class Index extends Component {
 
 在 `src/react-redux.js` 新增代码：
 
-```
+```react
 export class Provider extends Component {
     static proTypes= {
         store: PropTypes.object
@@ -2247,7 +2247,7 @@ export class Provider extends Component {
 
 可以用它来重构我们的 `src/index.js`：
 
-```
+```react
 ...
 // 头部引入 Provider
 import { Provider } from './react-redux'
@@ -2302,19 +2302,19 @@ React.js 除了状态提升以外并没有更好的办法帮我们解决组件�
 
 在工程目录下使用 npm 安装 Redux 和 React-redux 模块：
 
-```
+```bash
 npm install redux react-redux --save
 ```
 
 把 `src/` 目录下 `Header.js`、`ThemeSwitch.js`、`Content.js` 的模块导入中的：
 
-```
+```react
 import { connect } from './react-redux'
 ```
 
 改成：
 
-```
+```react
 import { connect } from 'react-redux'
 ```
 
@@ -2322,7 +2322,7 @@ import { connect } from 'react-redux'
 
 修改 `src/index.js`，把前面部分的代码调整为：
 
-```
+```react
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { createStore } from 'redux'
@@ -2373,7 +2373,7 @@ Smart 组件不用考虑太多复用性问题，它们就是用来执行特定�
 
 知道了组件有这两种分类以后，我们来重新审视一下之前的 `make-react-redux` 工程里面的组件，例如 `src/Header.js`：
 
-```
+```react
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -2404,7 +2404,7 @@ export default Header
 
 为了解决这个问题，我们把 Smart 和 Dumb 组件分开到两个不同的目录，不再在 Dumb 组件内部进行 `connect`，在 `src/` 目录下新建两个文件夹 `components/` 和 `containers/`：
 
-```
+```react
 src/
   components/
   containers/
@@ -2414,7 +2414,7 @@ src/
 
 删除 `src/Header.js`，新增 `src/components/Header.js`：
 
-```
+```react
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
@@ -2433,7 +2433,7 @@ export default class Header extends Component {
 
 现在 `src/components/Header.js` 毫无疑问是一个 Dumb 组件，它除了依赖 React.js 什么都不依赖。我们新建 `src/container/Header.js`，这是一个与之对应的 Smart 组件：
 
-```
+```react
 import { connect } from 'react-redux'
 import Header from '../components/Header'
 
@@ -2463,7 +2463,7 @@ export default connect(mapStateToProps)(Header)
 
 新建一个 `src/components/ThemeSwitch.js`：
 
-```
+```react
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
@@ -2496,7 +2496,7 @@ export default class ThemeSwitch extends Component {
 
 这是一个 Dumb 的 `ThemeSwitch`。新建一个 `src/containers/ThemeSwitch.js`：
 
-```
+```react
 import { connect } from 'react-redux'
 import ThemeSwitch from '../components/ThemeSwitch'
 
@@ -2517,7 +2517,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(ThemeSwitch)
 
 这是一个 Smart 的 `ThemeSwitch`。然后用一个 Smart 的 `Content` 去使用它，新建 `src/containers/Content.js`：
 
-```
+```react
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ThemeSwitch from './ThemeSwitch'
@@ -2548,7 +2548,7 @@ export default connect(mapStateToProps)(Content)
 
 删除 `src/ThemeSwitch.js` 和 `src/Content.js`，在 `src/index.js` 中直接使用 Smart 组件：
 
-```
+```react
 ...
 import Header from './containers/Header'
 import Content from './containers/Content'
@@ -2557,7 +2557,7 @@ import Content from './containers/Content'
 
 这样就把这种业务场景下的 Smart 和 Dumb 组件分离开来了：
 
-```
+```react
 src
 ├── components
 │   ├── Header.js
@@ -2577,7 +2577,7 @@ src
 
 这种场景下的改造留给大家做练习，最后的结果应该是：
 
-```
+```react
 src
 ├── components
 │   ├── Header.js

@@ -20,7 +20,7 @@
 
 [具体StageⅠ 实战代码点击这里](https://github.com/LbhFront-end/React-Project-Comment)
 
-```
+```react
 class CommentList extends Component {
     constructor(){
         this.state = {comments:[]}
@@ -79,7 +79,7 @@ class CommentList extends Component {
 
 我们在[讲解 JSX 的章节](https://github.com/LbhFront-end/About-React/blob/master/Stage%E2%85%A0.md#使用jsx描述ui信息)中提到，下面的代码：
 
-```
+```react
 ReactDOM.render(
  <Header />, 
   document.getElementById('root')
@@ -88,7 +88,7 @@ ReactDOM.render(
 
 会编译成：
 
-```
+```react
 ReactDOM.render(
   React.createElement(Header, null), 
   document.getElementById('root')
@@ -97,7 +97,7 @@ ReactDOM.render(
 
 其实我们把 `Header` 组件传给了 `React.createElement` 函数，又把函数返回结果传给了 `ReactDOM.render`。我们可以简单猜想一下它们会干什么事情：
 
-```
+```react
 // React.createElement 中实例化一个 Header
 const header = new Header(props,children);
 
@@ -114,7 +114,7 @@ document.getElementById('root').appendChild(headerDOM);
 
 我们把 *React.js 将组件渲染，并且构造 DOM 元素然后塞入页面的过程称为组件的挂载*（这个定义请好好记住）。其实 React.js 内部对待每个组件都有这么一个过程，也就是初始化组件 -> 挂载到页面上的过程。所以你可以理解一个组件的方法调用是这么一个过程：
 
-```
+```react
 -> constructor()
 -> render()
 // 然后构造 DOM 元素插入页面
@@ -122,7 +122,7 @@ document.getElementById('root').appendChild(headerDOM);
 
 这当然是很好理解的。React.js 为了让我们能够更好的掌控组件的挂载过程，往上面插入了两个方法：
 
-```
+```react
 -> constructor()
 -> componentWillMount()
 -> render()
@@ -134,7 +134,7 @@ document.getElementById('root').appendChild(headerDOM);
 
 我们给 `Header` 组件加上这两个方法，并且打一些 Log：
 
-```
+```react
 class Header extends Component {
   constructor () {
     super()
@@ -162,7 +162,7 @@ class Header extends Component {
 
 在控制台你可以看到依次输出：
 
-```
+```react
 construct
 component will mount
 render
@@ -173,7 +173,7 @@ component did mount
 
 一个组件可以插入页面，当然也可以从页面中删除。
 
-```
+```react
 -> constructor()
 -> componentWillMount()
 -> render()
@@ -185,7 +185,7 @@ component did mount
 
 React.js 也控制了这个组件的删除过程。在组件删除之前 React.js 会调用组件定义的 `componentWillUnmount`：
 
-```
+```react
 -> constructor()
 -> componentWillMount()
 -> render()
@@ -199,7 +199,7 @@ React.js 也控制了这个组件的删除过程。在组件删除之前 React.j
 
 看看什么情况下会把组件从页面中删除，继续使用上面例子的代码，我们再定义一个 `Index` 组件：
 
-```
+```react
 class Index extends Component {
   constructor() {
     super()
@@ -234,7 +234,7 @@ ReactDOM.render(
 
 `Index` 组件使用了 `Header` 组件，并且有一个按钮，可以控制 `Header` 的显示或者隐藏。下面这行代码：
 
-```
+```react
 ...a
 {this.state.isShowHeader ? <Header /> : null}
 ...
@@ -242,7 +242,7 @@ ReactDOM.render(
 
 相当于 `state.isShowHeader` 为 `true` 的时候把 `Header` 插入页面，`false` 的时候把 `Header` 从页面上删除。这时候我们给 `Header` 添加 `componentWillUnmount` 方法：
 
-```
+```react
 ...
   componentWillUnmount() {
     console.log('component will unmount')
@@ -272,7 +272,7 @@ React.js 将组件渲染，并且构造 DOM 元素然后塞入页面的过程称
 
 我们会在 `constructor` 里面初始化 `state.date`，当然现在页面还是静态的，等下一会让时间动起来。 
 
-```
+```react
 class Clock extends Component {
     constructor() {
         super();
@@ -295,7 +295,7 @@ class Clock extends Component {
 
 一些组件启动的动作，包括像 Ajax 数据的拉取操作、一些定时器的启动等，就可以放在 `componentWillMount` 里面进行，例如 Ajax： 
 
-```
+```react
 ...
   componentWillMount () {
     ajax.get('http://json-api.com/user', (userData) => {
@@ -307,7 +307,7 @@ class Clock extends Component {
 
 当然在我们这个例子里面是定时器的启动，我们给 `Clock` 启动定时器：
 
-```
+```react
 class Clock extends Component {
   constructor () {
     super()
@@ -326,7 +326,7 @@ class Clock extends Component {
 
 我们在 `componentWillMount` 中用 `setInterval` 启动了一个定时器：每隔 1 秒更新中的 `state.date`，这样页面就可以动起来了。我们用一个 `Index` 把它用起来，并且插入页面：
 
-```
+```react
 class Index extends Component {
   render () {
     return (
@@ -345,7 +345,7 @@ ReactDOM.render(
 
 像上一节那样，我们修改这个 `Index` 让这个时钟可以隐藏或者显示：
 
-```
+```react
 class Index extends Component {
   constructor () {
     super()
@@ -379,7 +379,7 @@ class Index extends Component {
 
 这时候`componentWillUnmount` 就可以派上用场了，它的作用就是在组件销毁的时候，做这种清场的工作。例如清除该组件的定时器和其他的数据清理工作。我们给 `Clock`添加 `componentWillUnmount`，在组件销毁的时候清除该组件的定时器：
 
-```
+```react
 ...
   componentWillUnmount () {
     clearInterval(this.timer)
@@ -432,7 +432,7 @@ React.js 这种重新渲染的机制帮助我们免除了绝大部分的 DOM 更
 
 React.js 当中提供了 `ref` 属性来帮助我们获取已经挂载的元素的 DOM 节点，你可以给某个 JSX 元素加上 `ref`属性：
 
-```
+```react
 class AutoFocusInput extends Component {
     componentDidMount () {
         this.input.focus();
@@ -457,7 +457,7 @@ ReactDOM.render(
 
 顺带一提的是，其实可以给组件标签也加上 `ref` ，例如：
 
-```
+```react
 <Clock ref={(clock) => this.clock = clock} />
 ```
 
@@ -477,7 +477,7 @@ ReactDOM.render(
 
 基于我们目前的知识储备，可以迅速写出这样的代码：
 
-```
+```react
 class Card extends Component {
   render () {
     return (
@@ -506,7 +506,7 @@ ReactDOM.render(
 
 这样明显太丑了，如果 `Card` 除了 `content` 以外还能传入其他属性的话，那么这些 JSX 和其他属性就会混在一起。很不好维护，如果能像下面的代码那样使用 `Card` 那想必也是极好的：
 
-```
+```react
 ReactDOM.render(
   <Card>
     <h2>React.js 小书</h2>
@@ -519,7 +519,7 @@ ReactDOM.render(
 
 如果组件标签也能像普通的 HTML 标签那样编写内嵌的结构，那么就方便很多了。实际上，React.js 默认就支持这种写法，所有嵌套在组件中的 JSX 结构都可以在组件内部通过 `props.children` 获取到：
 
-```
+```react
 class Card extends Component {
   render () {
     return (
@@ -537,7 +537,7 @@ class Card extends Component {
 
 这种嵌套的内容成为了 `props.children` 数组的机制使得我们编写组件变得非常的灵活，我们甚至可以在组件内部把数组中的 JSX 元素安置在不同的地方：
 
-```
+```react
 class Layout extends Component {
   render () {
     return (
@@ -570,7 +570,7 @@ class Layout extends Component {
 
 出于安全考虑的原因（XSS 攻击），在 React.js 当中所有的表达式插入的内容都会被自动转义，就相当于 jQuery 里面的 `text(…)` 函数一样，任何的 HTML 格式都会被转义掉：
 
-```
+```react
 class Editor extends Component {
   constructor() {
     super()
@@ -595,7 +595,7 @@ class Editor extends Component {
 
 表达式插入并不会把一个 `<h1>` 渲染到页面，而是把它的文本形式渲染了。那要怎么才能做到设置动态 HTML 结构的效果呢？React.js 提供了一个属性 `dangerouslySetInnerHTML`，可以让我们设置动态设置元素的 innerHTML：
 
-```
+```react
 ...
   render () {
     return (
@@ -615,13 +615,13 @@ class Editor extends Component {
 
 React.js 中的元素的 `style` 属性的用法和 DOM 里面的 `style` 不大一样，普通的 HTML 中的：
 
-```
+```react
 <h1 style='font-size: 12px; color: red;'>React.js 小书</h1>
 ```
 
 在 React.js 中你需要把 CSS 属性变成一个对象再传给元素：
 
-```
+```react
 <h1 style={{fontSize: '12px', color: 'red'}}>React.js 小书</h1>
 ```
 
@@ -629,7 +629,7 @@ React.js 中的元素的 `style` 属性的用法和 DOM 里面的 `style` 不大
 
 用对象作为 `style` 方便我们动态设置元素的样式。我们可以用 `props` 或者 `state`中的数据生成样式对象再传给元素，然后用 `setState` 就可以修改样式，非常灵活：
 
-```
+```react
 <h1 style={{fontSize: '12px', color: this.state.color}}>React.js 小书</h1>
 ```
 
@@ -649,7 +649,7 @@ React.js 中的元素的 `style` 属性的用法和 DOM 里面的 `style` 不大
 
 React.js 的组件其实是为了构建大型应用程序而生。但是因为 JavaScript 这样的特性，你在编写了一个组件以后，根本不知道别人会怎么使用你的组件，往里传什么乱七八糟的参数，例如评论组件：
 
-```
+```react
 class Comment extends Component {
   const { comment } = this.props
   render () {
@@ -667,7 +667,7 @@ class Comment extends Component {
 
 但是别人往里面传一个数字你拿他一点办法都没有：
 
-```
+```react
 <Comment comment={1} />
 ```
 
@@ -675,13 +675,13 @@ JavaScript 在这种情况下是不会报任何错误的，但是页面就是显
 
 于是 React.js 就提供了一种机制，让你可以*给组件的配置参数加上类型验证*，就用上述的评论组件例子，你可以配置 `Comment` 只能接受对象类型的 `comment` 参数，你传个数字进来组件就强制报错。我们这里先安装一个 React 提供的第三方库 `prop-types`：
 
-```
+```bash
 npm install --save prop-types
 ```
 
 它可以帮助我们验证 `props` 的参数类型，例如：
 
-```
+```react
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
@@ -714,7 +714,7 @@ class Comment extends Component {
 
 这个出错信息并不够友好。我们可以通过 `isRequired` 关键字来强制组件某个参数必须传入：
 
-```
+```react
 ...
 static propTypes = {
   comment: PropTypes.object.isRequired
@@ -726,7 +726,7 @@ static propTypes = {
 
 React.js 提供的 `PropTypes` 提供了一系列的数据类型可以用来配置组件的参数：
 
-```
+```react
 PropTypes.array
 PropTypes.bool
 PropTypes.func
